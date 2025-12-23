@@ -14,7 +14,9 @@ st.write("The name on your Soothie will be:", name_on_order)
 conn = st.connection("snowflake")
 
 # Query data from Snowflake
-my_dataframe = conn.query("SELECT FRUIT_NAME FROM smoothies.public.fruit_options;", ttl="10m")
+my_dataframe = conn.query("SELECT FRUIT_NAME, SEARCH_ON FROM smoothies.public.fruit_options;", ttl="10m")
+st.dataframe(data=my_dataframe, use_container_width=True)
+st.stop()
 
 #old
 #session = get_active_session()
