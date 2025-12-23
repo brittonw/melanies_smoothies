@@ -11,11 +11,12 @@ st.write("Choose the fruits you want in your custom Smoothie!")
 name_on_order = st.text_input("Name on Smoothie")
 st.write("The name on your Soothie will be:", name_on_order)
 
-# Establish connection using secrets
-conn = st.connection("snowflake")
 
 # Query data from Snowflake
-my_dataframe = conn.query("SELECT FRUIT_NAME, SEARCH_ON FROM smoothies.public.fruit_options;", ttl="10m")
+cnx = st.connection("snowflake")
+session = cnx.session()
+my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
+
 #st.dataframe(data=my_dataframe, use_container_width=True)
 #st.stop()
 pd_df = my_dataframe.to_pandas()
@@ -51,8 +52,7 @@ if ingredients_list:
 
     if time_to_insert:
         #session.sql(my_insert_stmt).collect()
-        with conn.cursor() as cur:
-            cur.execute(my_insert_stmt)
+        session.sql(my_insert_stmt).collect()
         st.success('Your Smoothie is ordered, ' + name_on_order + '!', icon="✅")
         
 
